@@ -46,5 +46,4 @@ cmake --build .
 ```bash
 docker-compose up
 ```
-docker run -p 8080:8080 -e LOG_LEVEL=debug poco_template_server
-```
+
