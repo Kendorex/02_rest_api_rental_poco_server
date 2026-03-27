@@ -1,22 +1,37 @@
-# Poco Template Server
+# Poco Rental Server
 
 REST сервер на C++ с использованием библиотеки POCO.
 
-📖 [Расширенная документация](docs/DOCUMENTATION.md) — структура проекта, POCO, метрики, JWT, нагрузочное тестирование.
+Дополнительно postman_collection 
 
-## Endpoints
+## API Endpoints
 
-- `GET /api/v1/helloworld` — возвращает приветствие в JSON
-- `GET /api/v1/helloworld_jwt` — приветствие с данными из JWT (требует Bearer токен)
-- `POST /api/v1/auth` — Basic auth → JWT токен
-- `GET /metrics` — метрики Prometheus
-- `GET /swagger.yaml` — OpenAPI спецификация в формате YAML
+### Auth
+| Метод | Endpoint | Описание |
+|-------|----------|----------|
+| POST | `/api/v1/auth` | Получение JWT токена (Basic Auth) |
 
-## Переменные окружения
+### Users
+| Метод | Endpoint | Описание |
+|-------|----------|----------|
+| POST | `/api/v1/users/register` | Регистрация нового пользователя |
+| GET | `/api/v1/users/search?login={username}` | Поиск пользователя по логину (admin) |
+| GET | `/api/v1/users/search?name={mask}&surname={mask}` | Поиск по маске имени/фамилии (admin) |
 
-- `PORT` — порт сервера (по умолчанию: 8080)
-- `LOG_LEVEL` — уровень логирования: trace, debug, information, notice, warning, error, critical, fatal, none
-- `JWT_SECRET` — секрет для подписи JWT токенов (обязательно для auth и helloworld_jwt)
+### Cars
+| Метод | Endpoint | Описание |
+|-------|----------|----------|
+| GET | `/api/v1/cars` | Список доступных автомобилей |
+| POST | `/api/v1/cars` | Добавление нового автомобиля (fleetManager/admin) |
+| GET | `/api/v1/cars/search?class={class}` | Поиск автомобилей по классу |
+
+### Rentals
+| Метод | Endpoint | Описание |
+|-------|----------|----------|
+| POST | `/api/v1/rentals` | Создание новой аренды (customer+) |
+| GET | `/api/v1/rentals/active` | Получение активных аренд (customer+) |
+| GET | `/api/v1/rentals/history` | Получение истории аренд (customer+) |
+| PUT | `/api/v1/rentals/{id}/complete` | Досрочное завершение аренды (владелец/admin) |
 
 ## Сборка
 
@@ -26,15 +41,10 @@ cmake ..
 cmake --build .
 ```
 
-## Запуск
-
-```bash
-./build/poco_template_server
-```
-
 ## Docker
 
 ```bash
-docker build -t poco_template_server .
+docker-compose up
+```
 docker run -p 8080:8080 -e LOG_LEVEL=debug poco_template_server
 ```
